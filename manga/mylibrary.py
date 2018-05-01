@@ -5,7 +5,7 @@
  ---- Description:
  ---- Author: Ed
  ---- Date: 2018-04-29 23:14:39
- ---- Last modified: 2018-05-01 12:57:32
+ ---- Last modified: 2018-05-01 20:36:31
 """
 
 import multiprocessing
@@ -166,7 +166,13 @@ class Parser2(Parser):
         soup = BeautifulSoup(response.text, 'lxml')
         urls = [each.a.get('href') for each in soup.find_all('div', class_ = 'row') if each.a is not None]
         # skill: reversed() sort(reverse = reverse)
-        return urls[:self.latest]
+        if self.latest >0:
+            chapterurls = urls[:self.latest]
+        elif self.latest<0:
+            chapterurls = urls[self.latest:]
+        else:
+            chapterurls = urls
+        return chapterurls
 
 
     def GetPictureUrls(self, chapterurl):
