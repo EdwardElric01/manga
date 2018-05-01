@@ -1,0 +1,18 @@
+drop table if exists chapter;
+
+create view chapter as
+select A.projectname, A.chaptername, maxpicture, maxpicture - completed as lacknum
+from 
+(   select projectname, chaptername, count(*) as maxpicture
+    from picture group by projectname, chaptername
+    ) as A,
+(   select projectname, chaptername, count(*) as completed
+    from picture where ifdownload = 1 group by projectname, chaptername
+    ) as B
+where A.projectname = B.projectname and A.chaptername = B.chaptername;
+# skill : group by 后面不用括号，否则warning
+
+update picture set picturename = trim('\n' from picturename)
+where picturename in ( 
+    select picturename from (select picturename from picture where ifdownload = 0
+    ) as a );
